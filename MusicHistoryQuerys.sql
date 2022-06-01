@@ -11,11 +11,15 @@ ORDER BY ArtistName;
 
 /*Write a SELECT query that lists all the songs in the Song table and include the Artist name*/
 
-SELECT 
+SELECT     /*How I wrote it on my own*/
 s.Title,
 a.ArtistName
 FROM Song s
 LEFT JOIN Artist a ON s.ArtistId = a.id;
+
+SELECT s.Title,a.ArtistName  /*Class Example*/
+FROM Song AS s
+JOIN Artist AS a ON a.Id = s.ArtistId;
 
 /*Write a SELECT query that lists all the Artists that have a Soul Album*/
 
@@ -23,6 +27,12 @@ SELECT
 ArtistId
 FROM Album
 WHERE GenreId = 1;
+
+SELECT DISTINCT a.ArtistName
+FROM Artist a
+JOIN Album al ON al.ArtistId = a.Id
+JOIN Genre g ON g.Id = al.GenreId
+WHERE g.Name = 'Soul';
 
 /*Write a SELECT query that lists all the Artists that have a Jazz or Rock Album*/
 
@@ -32,12 +42,22 @@ FROM Album
 WHERE GenreId = 1
 OR GenreId = 2;
 
+SELECT DISTINCT a.ArtistName
+FROM Artist a
+JOIN Album al ON al.ArtistId = a.Id
+JOIN Genre g ON g.Id = al.GenreId
+WHERE g.Name = 'Soul' OR g.Name = 'Rock';
+
 /*Write a SELECT statement that lists the Albums with no songs*/
 
 SELECT
 AlbumLength
 FROM Album
 Where AlbumLength = 0;
+
+SELECT *
+FROM ALbum al
+LEFT JOIN Song s ON s.AlbumId = al.Id;
 
 /*Using the INSERT statement, add one of your favorite artists to the Artist table.*/
 
@@ -46,8 +66,8 @@ VALUES ('Starcadian', 2013);
 
 /*Using the INSERT statement, add one, or more, albums by your artist to the Album table.*/
 
-INSERT INTO Album (Title, ReleaseDate, AlbumLength, Label, ArtistId, GenreId)
-VALUES ('Midnight Signals', '2017',2140, 'Starcadian', 28,14);
+INSERT INTO Album (Title,ReleaseDate, AlbumLength, Label, ArtistId, GenreId)
+VALUES ('Midnight Signals', '2017',2140, 'Starcadian', 28, 14);
 
 /*Using the INSERT statement, add some songs that are on that album to the Song table.*/
 
@@ -73,10 +93,15 @@ Where AlbumId = 23;
 /*Write a SELECT statement to display how many songs exist for each album.
 You'll need to use the COUNT() function and the GROUP BY keyword sequence.*/
 
-Select
+Select /*How I did it*/
 COUNT(Id) AS SongsInAlbum
 FROM Song
 GROUP BY AlbumId;
+
+SELECT al.Title, COUNT(s.Id) AS 'Number of Tracks'
+FROM Album al
+LEFT JOIN Song s ON s.AlbumId = al.Id
+GROUP BY al.Id, al.Title;
 
 /*Write a SELECT statement to display how many songs exist for each artist. 
 Youll need to use the COUNT() function and the GROUP BY keyword sequence.*/
@@ -85,6 +110,11 @@ Select
 COUNT(Id) AS SongsSungByArtist
 FROM Song
 GROUP BY ArtistId;
+
+SELECT a.ArtistName, COUNT(s.Id) AS 'Number of Tracks'
+FROM Artist a
+LEFT JOIN  Song s ON a.Id = s.ArtistId
+GROUP BY a.ArtistName, a.Id;
 
 /* Write a SELECT statement to display how many songs exist for each genre. 
 Youll need to use the COUNT() function and the GROUP BY keyword sequence.*/
@@ -101,6 +131,12 @@ FROM Album
 GROUP BY ArtistId;
 
 /*(The above one is not solved)*/
+
+SELECT a.ArtistName, COUNT(DISTINCT al.Label) AS 'Number of Albums'  /*Class example*/
+FROM Artist a
+JOIN Album al on al.ArtistId = a.Id
+GROUP BY ArtistName
+HAVING COUNT(DISTINCT al.Label)> 1 ;
 
 /*Using ORDER BY and TOP 1, write a select statement to find the album with the longest duration.
 The result should display the album title and the duration.*/
